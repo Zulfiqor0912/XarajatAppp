@@ -29,7 +29,15 @@ public class Program
                 userN = userName;
                 var b = await userRepository.Register(userName, fullname);
 
-                if (b) Console.WriteLine("Registratsiya muvaffaqiyatli bo'ldi");
+                if (b) 
+                {
+                    Console.WriteLine("Registratsiya muvaffaqiyatli bo'ldi");
+                    Console.WriteLine("1-> guruh yaratish\n2-guruhga qo'shilish");
+
+                    var teamMenu = int.Parse(Console.ReadLine());
+                    TeamController(teamMenu);
+
+                } 
                 else { Console.WriteLine("Registratsiyadan o'tmadingiz!!!"); }
                 break;
             case 2:
@@ -66,6 +74,7 @@ public class Program
                 await teamRepository.CreateTeam(teamName, password);
                 break;
             case 2:
+                
                 Console.WriteLine("Guruh nomini kiriting: ");
                 var teamName1 = Console.ReadLine();
 
