@@ -6,5 +6,5 @@ public class User
     public string Username { get; set; } = string.Empty;
     public string Fullname { get; set; } = string.Empty;
     public DateTime CreatedDate { get; set; }
-    public string PasswordHash { get; set; } = string.Empty;
+    //public string PasswordHash { get; set; } = string.Empty;
 }

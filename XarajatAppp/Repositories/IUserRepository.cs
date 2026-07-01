@@ -4,6 +4,6 @@ namespace XarajatAppp.Repositories;
 
 public interface IUserRepository
 {
-    public Task<bool> Register(User user);
-    public Task<bool> Login (User user);
+    public Task<bool> Register(string username, string fullname);
+    public Task<bool> Login (string username);
 }

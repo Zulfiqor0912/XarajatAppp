@@ -10,19 +10,27 @@ public class UserRepository() : IUserRepository
     public Message message = new Message();
     
 
-    public Task<bool> Login(User user)
+    public async Task<bool> Login(string username)
     {
-        return Task.FromResult(users.Contains(user));
+        var user = users.Find(u => u.Username == username);
+        return user == null ? false : true;
     }
 
-    public Task<bool> Register(User user)
+    public async Task<bool> Register(string username, string fullname)
     {
+        var user = new User
+        {
+            Id = new Guid(),
+            Username = username,
+            Fullname = fullname,
+            CreatedDate = DateTime.Now
+        };
         if (users.Contains(user))
-            return Task.FromResult(false);
+            return false;
         else
         {
             users.Add(user);
-            return Task.FromResult(true);
+            return true;
         }
     }
     public Task<User> GetUserById(Guid userId)
