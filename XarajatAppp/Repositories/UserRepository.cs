@@ -33,9 +33,9 @@ public class UserRepository() : IUserRepository
             return true;
         }
     }
-    public Task<User> GetUserById(Guid userId)
+    public async Task<User> GetUserById(string username)
     {
-        var user = users.FirstOrDefault(u => u.Id == userId);
-        return Task.FromResult(user);
+        var user = users.FirstOrDefault(u => u.Username == username);
+        return user;
     }
 }
