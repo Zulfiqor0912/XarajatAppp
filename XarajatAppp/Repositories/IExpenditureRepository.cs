@@ -5,5 +5,5 @@ namespace XarajatAppp.Repositories;
 public interface IExpenditureRepository
 {
     public Task AddCost(string username, string fullname, decimal amount, string description);
-    public List<UsertCost> Calculate(string teamName);
+    public Task<List<UsertCost>> Calculate(string teamName);
 }

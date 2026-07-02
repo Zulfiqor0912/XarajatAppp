@@ -20,7 +20,7 @@ public class UserRepository() : IUserRepository
     {
         var user = new User
         {
-            Id = new Guid(),
+            Id = Guid.NewGuid(),
             Username = username,
             Fullname = fullname,
             CreatedDate = DateTime.Now
@@ -33,7 +33,7 @@ public class UserRepository() : IUserRepository
             return true;
         }
     }
-    public User GetUserById(string username)
+    public User GetUserByName(string username)
     {
         var user = users.FirstOrDefault(u => u.Username == username);
         return user;

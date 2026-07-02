@@ -13,24 +13,33 @@ namespace XarajatAppp.Repositories
         public List<Team> teams { get; set; } = new List<Team>();
         public List<User> teamUsers { get; set; }
         public TeamRepository(UserRepository userRepository) {
+            teamUsers = new List<User>();
             this.userRepository = userRepository;
         }
-        public async Task AddTeam(string teamName, string username, string password)
+        public async Task<bool> AddTeam(string teamName, string username, string password)
         {
             var t = teams.Find(t => t.Name == teamName);
             if (t != null)
             {
-                var user = userRepository.GetUserById(username);
+                var user = userRepository.GetUserByName(username);
                 if (user != null)
                 {
                     teamUsers.Add(user);
                     message.ShowMessage($"{teamName} guruhiga {username} foydalanuvchi qo'shildi");
+                    return true;
                 }
                 else
+                {
                     message.ShowMessage("Foydalanuchi topilmadi");
+                    return false;
+                }
             }
-            else
-                message.ShowMessage("Guruh topilmadi"); 
+            else 
+            {
+                message.ShowMessage("Guruh topilmadi");
+                return false;
+            }
+                 
         }
         public async Task CreateTeam(string teamName, string password)
         {
@@ -38,7 +47,7 @@ namespace XarajatAppp.Repositories
             {
                 var team = new Team
                 {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     Name = teamName,
                     PasswordHash = password
                 };
@@ -51,7 +60,12 @@ namespace XarajatAppp.Repositories
         }
         public async Task<Team> GetTeamByName(string teamName)
         {
-            return teams.Find(t => t.Name == teamName)!;
+            foreach (var item in teams)
+            {
+                Console.WriteLine(item);
+            }
+            var team = teams.Find(t => t.Name == teamName);
+            return team;
         }
     }
 }

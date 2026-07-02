@@ -88,7 +88,9 @@ public class Program
                     Console.WriteLine("Maxfiy kodni kiriting!!!");
                     var password2 = Console.ReadLine();
 
-                    await teamRepository.AddTeam(teamName1!, userN, password2!);
+                    var b = await teamRepository.AddTeam(teamName1!, userN, password2!);
+                    if (b)
+                        ExpenditureController();
                     break;
                 case 3:
                     a = false;
@@ -101,7 +103,7 @@ public class Program
         
     }
 
-    public void ExpenditureController()
+    public async Task ExpenditureController()
     {
         bool a = true;
         while (a)
@@ -113,17 +115,18 @@ public class Program
                 case 1:
                     Console.WriteLine("Qancha xarajat qildingiz: ");
                     var cost = decimal.Parse(Console.ReadLine());
-
+                    Console.WriteLine("Nima xarid qildingiz: ");
                     var description = Console.ReadLine();
-                    expenditure.AddCost(username, fullname, cost, description);
+
+                    await expenditure.AddCost(username, fullname, cost, description);
                     break;
                 case 2:
                     Console.WriteLine("Guruh nomini kiriting");
                     var teamName = Console.ReadLine();
-                    var teams = expenditure.Calculate(teamName);
+                    var teams = await expenditure.Calculate(teamName!);
                     foreach (var t in teams)
                     {
-                        Console.WriteLine(t);
+                        Console.WriteLine($" ID: {t.Id}\nUsername: {t.Username}\nFullname: {t.Fullname}\nUmumiy xarajati: {t.TotalCost}\nQancha pul berishi kerak: {t.ToGetMoney}\nQancha pul olish kk: {t.ToGiveMoney}\nGuruh harajati: {t.TotalCostTeamMoney}");
                     }
                     break;
                 case 3:

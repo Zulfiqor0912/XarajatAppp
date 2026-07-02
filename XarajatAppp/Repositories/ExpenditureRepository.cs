@@ -13,6 +13,7 @@ public class ExpenditureRepository : IExpenditureRepository
     public ExpenditureRepository(TeamRepository teamRepository)
     {
         this.teamRepository = teamRepository;
+        expenditures = new List<Expenditure>();
     }
     public async Task AddCost(string username, string fullname, decimal amount, string description)
     {
@@ -30,9 +31,9 @@ public class ExpenditureRepository : IExpenditureRepository
        expenditures.Add(expenditure);
     }
 
-    public List<UsertCost> Calculate(string teamName)
+    public async Task<List<UsertCost>> Calculate(string teamName)
     {
-        var team = teamRepository.GetTeamByName(teamName);
+        var team = await teamRepository.GetTeamByName(teamName);
         if (team != null)
         {
             decimal avareageCost = _amount / (decimal)expenditures.Count;
@@ -47,7 +48,7 @@ public class ExpenditureRepository : IExpenditureRepository
                 userCosts = _costUsers
                 .Select(x => new UsertCost
                 {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     Username = x.Username,
                     Fullname = "x.",
                     TotalCost = x.TotalAmount,
