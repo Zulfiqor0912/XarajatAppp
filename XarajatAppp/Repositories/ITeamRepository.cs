@@ -5,6 +5,6 @@ namespace XarajatAppp.Repositories;
 public interface ITeamRepository
 {
     public Task CreateTeam(string teamName, string password);
-    public Task AddTeam(string password, string username, string teamName);
+    public Task AddTeam(string teamName, string username, string password);
     public Task<Team> GetTeamByName(string teamName);
 }

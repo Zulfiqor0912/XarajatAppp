@@ -6,6 +6,10 @@ public class Program
 {
     IUserRepository userRepository = new UserRepository();
     ITeamRepository teamRepository = new TeamRepository();
+    IExpenditureRepository expenditure = new ExpenditureRepository();
+    public static string username;
+    public static string fullname;
+
     private string userN;
 
     private static void Main(string[] args)
@@ -23,20 +27,16 @@ public class Program
         {
             case 1:
                 Console.WriteLine("Username: ");
-                var userName = Console.ReadLine();
+                username = Console.ReadLine();
                 Console.WriteLine("Fullname: ");
-                var fullname = Console.ReadLine();
-                userN = userName;
-                var b = await userRepository.Register(userName, fullname);
+                fullname = Console.ReadLine();
+                userN = username;
+                var b = await userRepository.Register(username, fullname);
 
                 if (b) 
                 {
                     Console.WriteLine("Registratsiya muvaffaqiyatli bo'ldi");
-                    Console.WriteLine("1-> guruh yaratish\n2-guruhga qo'shilish");
-
-                    var teamMenu = int.Parse(Console.ReadLine());
-                    TeamController(teamMenu);
-
+                    TeamController();
                 } 
                 else { Console.WriteLine("Registratsiyadan o'tmadingiz!!!"); }
                 break;
@@ -48,10 +48,8 @@ public class Program
                 if (result)
                 {
                     Console.WriteLine("Login tasdiqlandi");
-                    Console.WriteLine("1-> guruh yaratish\n2-guruhga qo'shilish");
 
-                    var teamMenu = int.Parse(Console.ReadLine());
-                    TeamController(teamMenu);
+                    TeamController();
                 }
                 else { Console.WriteLine("Bunday foydalanuvchi mavjud emas"); }
                 break;
@@ -60,31 +58,76 @@ public class Program
         }
     }
 
-    public async void TeamController(int n)
+    public async void TeamController()
     {
-        switch (n)
+        bool a = true;
+        while (a)
         {
-            case 1:
-                Console.WriteLine("Guruh nomini kiriting: ");
-                var teamName = Console.ReadLine();
+            Console.WriteLine("1-> guruh yaratish\n2-guruhga qo'shilish\n3-orqaga");
+            var teamMenu = int.Parse(Console.ReadLine());
+            switch (teamMenu)
+            {
+                case 1:
+                    Console.WriteLine("Guruh nomini kiriting: ");
+                    var teamName = Console.ReadLine();
 
-                Console.WriteLine("Guruhga uchun mahfiy kod kiriting");
-                var password = Console.ReadLine();
+                    Console.WriteLine("Guruh uchun mahfiy kod kiriting");
+                    var password = Console.ReadLine();
+                    await teamRepository.CreateTeam(teamName, password);
+                    break;
+                case 2:
 
-                await teamRepository.CreateTeam(teamName, password);
-                break;
-            case 2:
-                
-                Console.WriteLine("Guruh nomini kiriting: ");
-                var teamName1 = Console.ReadLine();
+                    Console.WriteLine("Guruh nomini kiriting: ");
+                    var teamName1 = Console.ReadLine();
 
-                Console.WriteLine("Maxfiy kodni kiriting!!!");
-                var password2 = Console.ReadLine();
+                    Console.WriteLine("Maxfiy kodni kiriting!!!");
+                    var password2 = Console.ReadLine();
 
-                await teamRepository.AddTeam(teamName1!, userN, password2!);
-                break;
-            default:
-                break;
+                    await teamRepository.AddTeam(teamName1!, userN, password2!);
+                    break;
+                case 3:
+                    a = false;
+                    teamMenu = 3;
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+    }
+
+    public void ExpenditureController()
+    {
+        bool a = true;
+        while (a)
+        {
+            Console.WriteLine("1-> xarajat qo'shish\n2-Guruh hisoboti");
+            var teamMenu = int.Parse(Console.ReadLine());
+            switch (teamMenu)
+            {
+                case 1:
+                    Console.WriteLine("Qancha xarajat qildingiz: ");
+                    var cost = decimal.Parse(Console.ReadLine());
+
+                    var description = Console.ReadLine();
+                    expenditure.AddCost(username, fullname, cost, description);
+                    break;
+                case 2:
+                    Console.WriteLine("Guruh nomini kiriting");
+                    var teamName = Console.ReadLine();
+                    var teams = expenditure.Calculate(teamName);
+                    foreach (var t in teams)
+                    {
+                        Console.WriteLine(t);
+                    }
+                    break;
+                case 3:
+                    a = false;
+                    teamMenu = 3;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

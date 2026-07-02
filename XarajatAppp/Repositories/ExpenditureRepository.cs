@@ -9,13 +9,23 @@ public class ExpenditureRepository() : IExpenditureRepository
     private decimal _amount;
     private List<Expenditure> expenditures = new List<Expenditure>();
     private List<UsertCost> userCosts = new List<UsertCost>();
-    public async Task AddCost(Expenditure expenditure)
+    public async Task AddCost(string username, string fullname, decimal amount, string description)
     {
-        _amount += expenditure.Amount;
+        _amount += amount;
+        var expenditure = new Expenditure
+        {
+            Id = new Guid(),
+            Username = username,
+            Fullname = fullname,
+            Amount = amount,
+            Description = description,
+            CreatedDate = DateTime.Now
+        };
+
        expenditures.Add(expenditure);
     }
 
-    public async Task<List<UsertCost>> Calculate(string teamName)
+    public List<UsertCost> Calculate(string teamName)
     {
         var team = teamRepo.GetTeamByName(teamName);
         if (team != null)

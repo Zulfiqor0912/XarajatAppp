@@ -11,8 +11,11 @@ namespace XarajatAppp.Repositories
         public Message message = new Message();
         public UserRepository userRepository = new UserRepository();
         public List<Team> teams { get; set; } = new List<Team>();
-        public List<User> teamUsers { get; set; } = new List<User>();
-        public async Task AddTeam(string password, string username, string teamName)
+        public List<User> teamUsers { get; set; }
+        public TeamRepository() {
+            teamUsers = userRepository.users;
+        }
+        public async Task AddTeam(string teamName, string username, string password)
         {
             var t = teams.Find(t => t.Name == teamName);
             if (t != null)
