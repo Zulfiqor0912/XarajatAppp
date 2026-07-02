@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using XarajatAppp.Data;
 using XarajatAppp.Exensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace XarajatAppp.Repositories
 {
@@ -21,18 +22,26 @@ namespace XarajatAppp.Repositories
             var t = teams.Find(t => t.Name == teamName);
             if (t != null)
             {
-                var user = userRepository.GetUserByName(username);
-                if (user != null)
+                var hasher = new PasswordHasher<object>();
+                var result = hasher.VerifyHashedPassword(null, t.PasswordHash, password);
+
+                if (result == PasswordVerificationResult.Success)
                 {
-                    teamUsers.Add(user);
-                    message.ShowMessage($"{teamName} guruhiga {username} foydalanuvchi qo'shildi");
-                    return true;
+                    var user = userRepository.GetUserByName(username);
+                    if (user != null)
+                    {
+                        teamUsers.Add(user);
+                        message.ShowMessage($"{teamName} guruhiga {username} foydalanuvchi qo'shildi");
+                        return true;
+                    }
+                    else
+                    {
+                        message.ShowMessage("Foydalanuchi topilmadi");
+                        return false;
+                    }
                 }
-                else
-                {
-                    message.ShowMessage("Foydalanuchi topilmadi");
-                    return false;
-                }
+                else { message.ShowMessage("Parol noto'g'ri"); return false; }
+                
             }
             else 
             {
@@ -45,11 +54,14 @@ namespace XarajatAppp.Repositories
         {
             if (teams.Find(t => t.Name != teamName) is null)
             {
+                var hasher = new PasswordHasher<object>();
+                string hash = hasher.HashPassword(null, password);
+
                 var team = new Team
                 {
                     Id = Guid.NewGuid(),
                     Name = teamName,
-                    PasswordHash = password
+                    PasswordHash = hash
                 };
 
                 teams.Add(team);
@@ -60,10 +72,10 @@ namespace XarajatAppp.Repositories
         }
         public async Task<Team> GetTeamByName(string teamName)
         {
-            foreach (var item in teams)
-            {
-                Console.WriteLine(item);
-            }
+            //foreach (var item in teams)
+            //{
+            //    Console.WriteLine(item);
+            //}
             var team = teams.Find(t => t.Name == teamName);
             return team;
         }
