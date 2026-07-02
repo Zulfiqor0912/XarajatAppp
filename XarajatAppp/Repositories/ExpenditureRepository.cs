@@ -20,7 +20,7 @@ public class ExpenditureRepository : IExpenditureRepository
         _amount += amount;
         var expenditure = new Expenditure
         {
-            Id = new Guid(),
+            Id = Guid.NewGuid(),
             Username = username,
             Fullname = fullname,
             Amount = amount,
@@ -52,8 +52,8 @@ public class ExpenditureRepository : IExpenditureRepository
                     Username = x.Username,
                     Fullname = "x.",
                     TotalCost = x.TotalAmount,
-                    ToGetMoney = x.TotalAmount >= avareageCost ? 0 : avareageCost - x.TotalAmount,
-                    ToGiveMoney = x.TotalAmount <= avareageCost ? avareageCost - x.TotalAmount : 0,
+                    ToGetMoney = x.TotalAmount >= avareageCost ? 0 : (avareageCost - x.TotalAmount),
+                    ToGiveMoney = x.TotalAmount <= avareageCost ? (avareageCost - x.TotalAmount) : 0,
                     TotalCostTeamMoney = _amount
                 }).ToList();
             return userCosts;

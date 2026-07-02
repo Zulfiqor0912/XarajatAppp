@@ -113,12 +113,16 @@ public class Program
             switch (teamMenu)
             {
                 case 1:
+                    Console.WriteLine("Kim xarajat qildi (Username): ");
+                    var u = Console.ReadLine();
+
                     Console.WriteLine("Qancha xarajat qildingiz: ");
                     var cost = decimal.Parse(Console.ReadLine());
+
                     Console.WriteLine("Nima xarid qildingiz: ");
                     var description = Console.ReadLine();
 
-                    await expenditure.AddCost(username, fullname, cost, description);
+                    await expenditure.AddCost(u, fullname, cost, description);
                     break;
                 case 2:
                     Console.WriteLine("Guruh nomini kiriting");
