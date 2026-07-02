@@ -33,7 +33,7 @@ public class UserRepository() : IUserRepository
             return true;
         }
     }
-    public async Task<User> GetUserById(string username)
+    public User GetUserById(string username)
     {
         var user = users.FirstOrDefault(u => u.Username == username);
         return user;

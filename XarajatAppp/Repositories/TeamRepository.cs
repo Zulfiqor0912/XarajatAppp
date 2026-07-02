@@ -9,18 +9,18 @@ namespace XarajatAppp.Repositories
     public class TeamRepository : ITeamRepository
     {
         public Message message = new Message();
-        public UserRepository userRepository = new UserRepository();
+        private UserRepository userRepository;
         public List<Team> teams { get; set; } = new List<Team>();
         public List<User> teamUsers { get; set; }
-        public TeamRepository() {
-            teamUsers = userRepository.users;
+        public TeamRepository(UserRepository userRepository) {
+            this.userRepository = userRepository;
         }
         public async Task AddTeam(string teamName, string username, string password)
         {
             var t = teams.Find(t => t.Name == teamName);
             if (t != null)
             {
-                var user = await userRepository.GetUserById(username);
+                var user = userRepository.GetUserById(username);
                 if (user != null)
                 {
                     teamUsers.Add(user);

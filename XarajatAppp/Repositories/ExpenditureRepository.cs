@@ -3,12 +3,17 @@ using XarajatAppp.Exensions;
 
 namespace XarajatAppp.Repositories;
 
-public class ExpenditureRepository() : IExpenditureRepository
+public class ExpenditureRepository : IExpenditureRepository
 {
-    private TeamRepository teamRepo = new TeamRepository();
+    private TeamRepository teamRepository;
     private decimal _amount;
-    private List<Expenditure> expenditures = new List<Expenditure>();
-    private List<UsertCost> userCosts = new List<UsertCost>();
+    private List<Expenditure> expenditures;
+    private List<UsertCost> userCosts;
+
+    public ExpenditureRepository(TeamRepository teamRepository)
+    {
+        this.teamRepository = teamRepository;
+    }
     public async Task AddCost(string username, string fullname, decimal amount, string description)
     {
         _amount += amount;
@@ -27,7 +32,7 @@ public class ExpenditureRepository() : IExpenditureRepository
 
     public List<UsertCost> Calculate(string teamName)
     {
-        var team = teamRepo.GetTeamByName(teamName);
+        var team = teamRepository.GetTeamByName(teamName);
         if (team != null)
         {
             decimal avareageCost = _amount / (decimal)expenditures.Count;

@@ -4,14 +4,19 @@ using XarajatAppp.Repositories;
 
 public class Program
 {
-    IUserRepository userRepository = new UserRepository();
-    ITeamRepository teamRepository = new TeamRepository();
-    IExpenditureRepository expenditure = new ExpenditureRepository();
+    UserRepository userRepository = new UserRepository();
+    TeamRepository teamRepository;
+    ExpenditureRepository expenditure;
     public static string username;
     public static string fullname;
 
     private string userN;
 
+    public Program()
+    {
+        teamRepository = new TeamRepository(userRepository);
+        expenditure = new ExpenditureRepository(teamRepository);
+    }
     private static void Main(string[] args)
     {
         Console.WriteLine("1-> register\n2-> login");
