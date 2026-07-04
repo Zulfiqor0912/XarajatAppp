@@ -6,4 +6,5 @@ public interface IUserRepository
 {
     public Task<bool> Register(string username, string fullname);
     public Task<bool> Login (string username);
+    public Task<List<User>> GetAllUsers();
 }

@@ -4,10 +4,17 @@ using XarajatAppp.Exensions;
 
 namespace XarajatAppp.Repositories;
 
-public class UserRepository() : IUserRepository
+public class UserRepository : IUserRepository
 {
-    public List<User> users { get; set; } = new List<User>();
+    public List<User> users { get; set; }
     public Message message = new Message();
+    private const string Path = "users.json";
+
+    public UserRepository()
+    {
+        if (!File.Exists(Path))
+            users = new List<User>();
+    }
     
 
     public async Task<bool> Login(string username)
@@ -25,17 +32,34 @@ public class UserRepository() : IUserRepository
             Fullname = fullname,
             CreatedDate = DateTime.Now
         };
+
+        users = await GetAllUsers();
+
         if (users.Contains(user))
             return false;
         else
         {
             users.Add(user);
+            var json = JsonSerializer.Serialize(users);
+            File.WriteAllText(Path, json);
             return true;
         }
     }
-    public User GetUserByName(string username)
+    public  async Task<User> GetUserByName(string username)
     {
-        var user = users.FirstOrDefault(u => u.Username == username);
+        var us = await GetAllUsers();
+        var user = us.FirstOrDefault(u => u.Username == username);
         return user;
+    }
+
+    public async Task<List<User>> GetAllUsers()
+    {
+        if (!File.Exists(Path))
+            return new List<User>();
+        string json = await File.ReadAllTextAsync(Path);
+        if (string.IsNullOrWhiteSpace(json))
+            return new List<User>();
+        return JsonSerializer.Deserialize<List<User>>(json) ?? new List<User>();
+
     }
 }

@@ -27,7 +27,7 @@ namespace XarajatAppp.Repositories
 
                 if (result == PasswordVerificationResult.Success)
                 {
-                    var user = userRepository.GetUserByName(username);
+                    var user = await userRepository.GetUserByName(username);
                     if (user != null)
                     {
                         teamUsers.Add(user);

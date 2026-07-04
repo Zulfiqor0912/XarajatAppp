@@ -19,47 +19,62 @@ public class Program
     }
     private static void Main(string[] args)
     {
-        Console.WriteLine("1-> register\n2-> login");
-        int n = int.Parse(Console.ReadLine());
-
         Program p = new Program();
-        p.UserController(n);
+        p.UserController();
         
     }
-    private async void UserController(int n)
+    private async void UserController()
     {
-        switch (n)
+        bool uc = true;
+        while (uc)
         {
-            case 1:
-                Console.WriteLine("Username: ");
-                username = Console.ReadLine();
-                Console.WriteLine("Fullname: ");
-                fullname = Console.ReadLine();
-                userN = username;
-                var b = await userRepository.Register(username, fullname);
+            Console.WriteLine("1-> register\n2-> login\n3-> foydalanuvchilarin ko'rish");
+            int n = int.Parse(Console.ReadLine());
+            switch (n)
+            {
+                case 1:
+                    Console.WriteLine("Username: ");
+                    username = Console.ReadLine();
+                    Console.WriteLine("Fullname: ");
+                    fullname = Console.ReadLine();
+                    userN = username;
+                    var b = await userRepository.Register(username, fullname);
 
-                if (b) 
-                {
-                    Console.WriteLine("Registratsiya muvaffaqiyatli bo'ldi");
-                    TeamController();
-                } 
-                else { Console.WriteLine("Registratsiyadan o'tmadingiz!!!"); }
-                break;
-            case 2:
-                Console.WriteLine("Username: ");
-                var userName1 = Console.ReadLine();
+                    if (b)
+                    {
+                        Console.WriteLine("Registratsiya muvaffaqiyatli bo'ldi");
+                        TeamController();
+                    }
+                    else { Console.WriteLine("Registratsiyadan o'tmadingiz!!!"); }
+                    break;
+                case 2:
+                    Console.WriteLine("Username: ");
+                    var userName1 = Console.ReadLine();
 
-                var result =await userRepository.Login(userName1);
-                if (result)
-                {
-                    Console.WriteLine("Login tasdiqlandi");
+                    var result = await userRepository.Login(userName1);
+                    if (result)
+                    {
+                        Console.WriteLine("Login tasdiqlandi");
 
-                    TeamController();
-                }
-                else { Console.WriteLine("Bunday foydalanuvchi mavjud emas"); }
-                break;
-            default:
-                break;
+                        TeamController();
+                    }
+                    else { Console.WriteLine("Bunday foydalanuvchi mavjud emas"); }
+                    break;
+                case 3:
+                    var users = await userRepository.GetAllUsers();
+                    if (users.Count != 0)
+                    {
+                        foreach (var u in users)
+                        {
+                            Console.WriteLine($"{u.Id}\n{u.Username}\n{u.Fullname}\n{u.CreatedDate}");
+                        }
+                    }
+                    else { Console.WriteLine("Foydalanuvchilar mavjud emas"); }
+                    break;
+                default:
+
+                    break;
+            }
         }
     }
 
