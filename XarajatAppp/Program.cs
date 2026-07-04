@@ -17,18 +17,18 @@ public class Program
         teamRepository = new TeamRepository(userRepository);
         expenditure = new ExpenditureRepository(teamRepository);
     }
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         Program p = new Program();
-        p.UserController();
+        await p.UserController();
         
     }
-    private async void UserController()
+    private async Task UserController()
     {
         bool uc = true;
         while (uc)
         {
-            Console.WriteLine("1-> register\n2-> login\n3-> foydalanuvchilarin ko'rish");
+            Console.WriteLine("1-> register\n2-> login\n3-> foydalanuvchilarni ko'rish");
             int n = int.Parse(Console.ReadLine());
             switch (n)
             {
@@ -55,8 +55,7 @@ public class Program
                     if (result)
                     {
                         Console.WriteLine("Login tasdiqlandi");
-
-                        TeamController();
+                        await TeamController();
                     }
                     else { Console.WriteLine("Bunday foydalanuvchi mavjud emas"); }
                     break;
@@ -66,7 +65,7 @@ public class Program
                     {
                         foreach (var u in users)
                         {
-                            Console.WriteLine($"{u.Id}\n{u.Username}\n{u.Fullname}\n{u.CreatedDate}");
+                            Console.WriteLine($"ID: {u.Id}\nUsername: {u.Username}\nFullname: {u.Fullname}\nYaratilgan sanasi: {u.CreatedDate}");
                         }
                     }
                     else { Console.WriteLine("Foydalanuvchilar mavjud emas"); }
@@ -78,12 +77,12 @@ public class Program
         }
     }
 
-    public async void TeamController()
+    public async Task TeamController()
     {
         bool a = true;
         while (a)
         {
-            Console.WriteLine("1-> guruh yaratish\n2-guruhga qo'shilish\n3-orqaga");
+            Console.WriteLine("1-> guruh yaratish\n2-guruhga qo'shilish\n3-guruhlar ro'yhati\n4-orqaga");
             var teamMenu = int.Parse(Console.ReadLine());
             switch (teamMenu)
             {
@@ -105,11 +104,21 @@ public class Program
 
                     var b = await teamRepository.AddTeam(teamName1!, userN, password2!);
                     if (b)
-                        ExpenditureController();
+                        await ExpenditureController();
                     break;
                 case 3:
+                    var teams = await teamRepository.GetAllTeam();
+                    foreach (var item in teams)
+                    {
+                        Console.WriteLine($"" +
+                            $"  Id: {item.Id}" +
+                            $"  Teamname: {item.Name}" +
+                            $"  Password: *********");
+                    }
+                    break;
+                case 4:
                     a = false;
-                    teamMenu = 3;
+                    teamMenu = 4;
                     break;
                 default:
                     break;

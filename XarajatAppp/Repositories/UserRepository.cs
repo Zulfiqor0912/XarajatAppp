@@ -8,7 +8,7 @@ public class UserRepository : IUserRepository
 {
     public List<User> users { get; set; }
     public Message message = new Message();
-    private const string Path = "users.json";
+    private static readonly string Path = System.IO.Path.Combine(AppContext.BaseDirectory, "users.json");
 
     public UserRepository()
     {
@@ -59,7 +59,7 @@ public class UserRepository : IUserRepository
         string json = await File.ReadAllTextAsync(Path);
         if (string.IsNullOrWhiteSpace(json))
             return new List<User>();
-        return JsonSerializer.Deserialize<List<User>>(json) ?? new List<User>();
-
+        users = JsonSerializer.Deserialize<List<User>>(json) ?? new List<User>();
+        return users;
     }
 }

@@ -4,6 +4,7 @@ using System.Text;
 using XarajatAppp.Data;
 using XarajatAppp.Exensions;
 using Microsoft.AspNetCore.Identity;
+using System.Text.Json;
 
 namespace XarajatAppp.Repositories
 {
@@ -11,10 +12,14 @@ namespace XarajatAppp.Repositories
     {
         public Message message = new Message();
         private UserRepository userRepository;
-        public List<Team> teams { get; set; } = new List<Team>();
+        public List<Team> teams { get; set; }
         public List<User> teamUsers { get; set; }
+        private static readonly string PathT = System.IO.Path.Combine(AppContext.BaseDirectory, "teams.json");
+        private static readonly string PathTU = System.IO.Path.Combine(AppContext.BaseDirectory, "teamUsers.json");
         public TeamRepository(UserRepository userRepository) {
-            teamUsers = new List<User>();
+            if (!File.Exists(PathT)) teams = new List<Team>();
+            if (!File.Exists(PathTU)) teamUsers = new List<User>();
+                
             this.userRepository = userRepository;
         }
         public async Task<bool> AddTeam(string teamName, string username, string password)
@@ -52,7 +57,8 @@ namespace XarajatAppp.Repositories
         }
         public async Task CreateTeam(string teamName, string password)
         {
-            if (teams.Find(t => t.Name != teamName) is null)
+
+            if (teams.Find(t => t.Name == teamName) is null)
             {
                 var hasher = new PasswordHasher<object>();
                 string hash = hasher.HashPassword(null, password);
@@ -63,9 +69,16 @@ namespace XarajatAppp.Repositories
                     Name = teamName,
                     PasswordHash = hash
                 };
-
-                teams.Add(team);
-                Console.WriteLine("Guruh yaratildi");
+                teams = await GetAllTeam();
+                if (teams.Contains(team))
+                    Console.WriteLine("Bunday guruh mavjud");
+                else
+                {
+                    teams.Add(team);
+                    var json = JsonSerializer.Serialize(teams);
+                    await File.WriteAllTextAsync(PathT, json);
+                    Console.WriteLine("Guruh yaratildi");
+                }
             }
             else { message.ShowMessage("Bunday nomli guruh mavjud"); }
             
@@ -78,6 +91,18 @@ namespace XarajatAppp.Repositories
             //}
             var team = teams.Find(t => t.Name == teamName);
             return team;
+        }
+
+        public async Task<List<Team>> GetAllTeam()
+        {
+            if (!File.Exists(PathT))
+                return new List<Team>();
+            string json = await File.ReadAllTextAsync(PathT);
+            if (string.IsNullOrWhiteSpace(json))
+                return new List<Team>();
+
+            teams = JsonSerializer.Deserialize<List<Team>>(json) ?? new List<Team>();
+            return teams;
         }
     }
 }
