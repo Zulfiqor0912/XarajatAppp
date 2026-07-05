@@ -52,8 +52,8 @@ public class ExpenditureRepository : IExpenditureRepository
                     Username = x.Username,
                     Fullname = "x.",
                     TotalCost = x.TotalAmount,
-                    ToGetMoney = x.TotalAmount >= avareageCost ? (avareageCost - x.TotalAmount) : 0,
-                    ToGiveMoney = x.TotalAmount <= avareageCost ? (avareageCost - x.TotalAmount) : 0,
+                    ToGetMoney = x.TotalAmount >= avareageCost ? (x.TotalAmount - avareageCost) : 0,
+                    ToGiveMoney = x.TotalAmount <= avareageCost ? (x.TotalAmount - avareageCost) : 0,
                     TotalCostTeamMoney = _amount
                 }).ToList();
             return userCosts;

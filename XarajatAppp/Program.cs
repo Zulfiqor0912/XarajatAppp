@@ -43,7 +43,7 @@ public class Program
                     if (b)
                     {
                         Console.WriteLine("Registratsiya muvaffaqiyatli bo'ldi");
-                        TeamController();
+                        await TeamController();
                     }
                     else { Console.WriteLine("Registratsiyadan o'tmadingiz!!!"); }
                     break;
@@ -154,7 +154,7 @@ public class Program
                     var teams = await expenditure.Calculate(teamName!);
                     foreach (var t in teams)
                     {
-                        Console.WriteLine($" ID: {t.Id}\nUsername: {t.Username}\nFullname: {t.Fullname}\nUmumiy xarajati: {t.TotalCost}\nQancha pul berishi kerak: {t.ToGetMoney}\nQancha pul olish kk: {t.ToGiveMoney}\nGuruh harajati: {t.TotalCostTeamMoney}");
+                        Console.WriteLine($" ID: {t.Id}\nUsername: {t.Username}\nFullname: {t.Fullname}\nUmumiy xarajati: {t.TotalCost}\nQancha pul olish kk: {t.ToGetMoney}\nQancha pul berishi kerak: {t.ToGiveMoney}\nGuruh harajati: {t.TotalCostTeamMoney}");
                     }
                     break;
                 case 3:

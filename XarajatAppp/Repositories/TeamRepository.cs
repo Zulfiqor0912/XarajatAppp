@@ -12,7 +12,7 @@ namespace XarajatAppp.Repositories
     {
         public Message message = new Message();
         private UserRepository userRepository;
-        public List<Team> teams { get; set; }
+        public List<Team> teams { get; set; } = new List<Team>();
         public List<User> teamUsers { get; set; }
         private static readonly string PathT = System.IO.Path.Combine(AppContext.BaseDirectory, "teams.json");
         private static readonly string PathTU = System.IO.Path.Combine(AppContext.BaseDirectory, "teamUsers.json");
@@ -57,7 +57,7 @@ namespace XarajatAppp.Repositories
         }
         public async Task CreateTeam(string teamName, string password)
         {
-
+            if (!File.Exists(PathT)) teams = new List<Team>();
             if (teams.Find(t => t.Name == teamName) is null)
             {
                 var hasher = new PasswordHasher<object>();
