@@ -121,8 +121,8 @@ public class Program
                     foreach (var item in teams)
                     {
                         Console.WriteLine($"" +
-                            $"  Id: {item.Id}" +
-                            $"  Teamname: {item.Name}" +
+                            $"  Id: {item.Id} \n" +
+                            $"  Teamname: {item.Name} \n" +
                             $"  Password: *********");
                     }
                     break;
@@ -142,9 +142,15 @@ public class Program
         bool a = true;
         while (a)
         {
-            Console.WriteLine("\n    1 -> xarajat qo'shish\n    2 -> Guruh hisoboti\n    3 -> orqaga");
+            Console.WriteLine("" +
+                "    1 -> xarajat qo'shish" +
+                "    2 -> Guruh hisoboti" +
+                "    3 -> Xarajatlar tarixi" +
+                "    4 -> orqaga");
+
             Console.Write("-> ");
             var teamMenu = int.Parse(Console.ReadLine());
+
             switch (teamMenu)
             {
                 case 1:
@@ -157,18 +163,38 @@ public class Program
                     Console.Write("Nima xarid qildingiz: ");
                     var description = Console.ReadLine();
 
-                    await expenditure.AddCost(u, fullname, cost, description);
+                    await expenditure.AddCost(u, fullname, cost, teamname, description);
                     break;
                 case 2:
                     var teams = await expenditure.Calculate(teamname!);
                     foreach (var t in teams)
                     {
-                        Console.WriteLine($"\nID: {t.Id}\nUsername: {t.Username}\nFullname: {t.Fullname}\nUmumiy xarajati: {t.TotalCost}\nQancha pul olish kk: {t.ToGetMoney}\nQancha pul berishi kerak: {t.ToGiveMoney}\nGuruh harajati: {t.TotalCostTeamMoney}");
+                        Console.WriteLine($"\n=====================================" +
+                            $"ID: {t.Id}\n" +
+                            $"Username: {t.Username}\n" +
+                            $"Fullname: {t.Fullname}\n" +
+                            $"Umumiy xarajati: {t.TotalCost} \n" +
+                            $"Qancha pul olish kk: {t.ToGetMoney} \n" +
+                            $"Qancha pul berishi kerak: {t.ToGiveMoney} \n  " +
+                            $"Guruh harajati: {t.TotalCostTeamMoney} \n");
                     }
                     break;
                 case 3:
+                    var items = await expenditure.GetAllExpenditures(teamname);
+                    foreach (var item in items)
+                    {
+                        Console.WriteLine($"\n-----------------" +
+                            $"Id: {item.Id}\n" +
+                            $"Username: {item.Username} \n" +
+                            $"Fullname: {item.Fullname} \n" +
+                            $"Amount: {item.Amount} \n" +
+                            $"Description: {item.Description} \n" +
+                            $"TeamName: {item.TeamName} \n" +
+                            $"CreateDate: {item.CreatedDate} \n" );
+                    }
+                    break;
+                case 4:
                     a = false;
-                    teamMenu = 3;
                     break;
                 default:
                     break;

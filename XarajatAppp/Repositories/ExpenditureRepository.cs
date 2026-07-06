@@ -1,4 +1,5 @@
-﻿using XarajatAppp.Data;
+﻿using System.Text.Json;
+using XarajatAppp.Data;
 using XarajatAppp.Exensions;
 
 namespace XarajatAppp.Repositories;
@@ -9,6 +10,7 @@ public class ExpenditureRepository : IExpenditureRepository
     private decimal _amount;
     private List<Expenditure> expenditures;
     private List<UsertCost> userCosts;
+    private Message message = new Message();
 
     private static readonly string PathE = System.IO.Path.Combine(AppContext.BaseDirectory, "expenditure.json");
     private static readonly string PathUC = System.IO.Path.Combine(AppContext.BaseDirectory, "usercost.json");
@@ -20,10 +22,14 @@ public class ExpenditureRepository : IExpenditureRepository
         this.teamRepository = teamRepository;
 
     }
-    public async Task AddCost(string username, string fullname, decimal amount, string description)
+    public async Task AddCost(string username, string fullname, decimal amount, string teamname, string description)
     {
+        
+        if (!File.Exists(PathUC)) userCosts = new List<UsertCost>();
 
-        _amount += amount;  
+        expenditures = await GetAllExpenditures(teamname);
+
+        _amount += amount;
         var expenditure = new Expenditure
         {
             Id = Guid.NewGuid(),
@@ -31,10 +37,14 @@ public class ExpenditureRepository : IExpenditureRepository
             Fullname = fullname,
             Amount = amount,
             Description = description,
+            TeamName = teamname,
             CreatedDate = DateTime.Now
         };
 
-       expenditures.Add(expenditure);
+        expenditures.Add(expenditure);
+        var json = JsonSerializer.Serialize(expenditures);
+        await File.WriteAllTextAsync(PathE, json);
+        message.ShowMessage("Xarajat saqlandi!");
     }
 
     public async Task<List<UsertCost>> Calculate(string teamName)
@@ -76,8 +86,18 @@ public class ExpenditureRepository : IExpenditureRepository
         }
     }
 
-    public Task<List<Expenditure>> ShowAllExpenditure(string teamName)
+    public async Task<List<Expenditure>> GetAllExpenditures(string teamName)
     {
-        throw new NotImplementedException();
+        if (!File.Exists(PathE)) return new List<Expenditure>();
+
+        string json = await File.ReadAllTextAsync(PathE);
+
+        if (string.IsNullOrWhiteSpace(json)) return new List<Expenditure>();
+
+        var e = JsonSerializer.Deserialize<List<Expenditure>>(json) ?? new List<Expenditure>();
+
+        return e
+            .Where(tn => tn.TeamName == teamName)
+            .ToList(); ;
     }
 }
