@@ -20,6 +20,8 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> Login(string username, string password)
     {
+        if (!File.Exists(Path)) return false;
+        users = await GetAllUsers();
         var user = users.Find(u => u.Username == username);
 
         var hasher = new PasswordHasher<object>();
