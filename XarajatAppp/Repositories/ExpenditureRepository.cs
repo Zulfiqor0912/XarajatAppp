@@ -10,14 +10,20 @@ public class ExpenditureRepository : IExpenditureRepository
     private List<Expenditure> expenditures;
     private List<UsertCost> userCosts;
 
+    private static readonly string PathE = System.IO.Path.Combine(AppContext.BaseDirectory, "expenditure.json");
+    private static readonly string PathUC = System.IO.Path.Combine(AppContext.BaseDirectory, "usercost.json");
+
     public ExpenditureRepository(TeamRepository teamRepository)
     {
+        if (!File.Exists(PathE)) expenditures = new List<Expenditure>();
+        if (!File.Exists(PathUC)) userCosts = new List<UsertCost>();
         this.teamRepository = teamRepository;
-        expenditures = new List<Expenditure>();
+
     }
     public async Task AddCost(string username, string fullname, decimal amount, string description)
     {
-        _amount += amount;
+
+        _amount += amount;  
         var expenditure = new Expenditure
         {
             Id = Guid.NewGuid(),
@@ -34,7 +40,7 @@ public class ExpenditureRepository : IExpenditureRepository
     public async Task<List<UsertCost>> Calculate(string teamName)
     {
         var team = await teamRepository.GetTeamByName(teamName);
-        if (team != null)
+        if (team != null && expenditures.Count != 0)
         {
             decimal avareageCost = _amount / (decimal)expenditures.Count;
             var _costUsers = expenditures
@@ -61,6 +67,10 @@ public class ExpenditureRepository : IExpenditureRepository
         else {
             return userCosts;
         }
-        
+    }
+
+    public Task<List<Expenditure>> ShowAllExpenditure(string teamName)
+    {
+        throw new NotImplementedException();
     }
 }

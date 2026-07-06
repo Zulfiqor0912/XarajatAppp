@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Text.Json;
 using XarajatAppp.Data;
 using XarajatAppp.Exensions;
 
@@ -17,19 +18,31 @@ public class UserRepository : IUserRepository
     }
     
 
-    public async Task<bool> Login(string username)
+    public async Task<bool> Login(string username, string password)
     {
         var user = users.Find(u => u.Username == username);
+
+        var hasher = new PasswordHasher<object>();
+        var result = hasher.VerifyHashedPassword(null, user.PasswordHash, password);
+
+        if (result != PasswordVerificationResult.Success) 
+        {
+            message.ShowMessage("Noto'g'ri parol");
+            return false;
+        }
         return user == null ? false : true;
     }
 
-    public async Task<bool> Register(string username, string fullname)
+    public async Task<bool> Register(string username, string fullname, string password)
     {
+        var hasher = new PasswordHasher<object>();
+        string hash = hasher.HashPassword(null, password);
         var user = new User
         {
             Id = Guid.NewGuid(),
             Username = username,
             Fullname = fullname,
+            PasswordHash = hash,
             CreatedDate = DateTime.Now
         };
 

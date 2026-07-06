@@ -37,8 +37,10 @@ public class Program
                     username = Console.ReadLine();
                     Console.WriteLine("Fullname: ");
                     fullname = Console.ReadLine();
+                    Console.WriteLine("Password");
+                    var loginPassword = Console.ReadLine();
                     userN = username;
-                    var b = await userRepository.Register(username, fullname);
+                    var b = await userRepository.Register(username, fullname, loginPassword);
 
                     if (b)
                     {
@@ -51,7 +53,10 @@ public class Program
                     Console.WriteLine("Username: ");
                     var userName1 = Console.ReadLine();
 
-                    var result = await userRepository.Login(userName1);
+                    Console.WriteLine("Password");
+                    var loginPassword1 = Console.ReadLine();
+                    var result = await userRepository.Login(userName1, loginPassword1);
+
                     if (result)
                     {
                         Console.WriteLine("Login tasdiqlandi");
