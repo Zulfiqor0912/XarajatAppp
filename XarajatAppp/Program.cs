@@ -55,7 +55,7 @@ public class Program
                     Console.Write("Username: ");
                     var userName1 = Console.ReadLine();
 
-                    Console.Write("Password");
+                    Console.Write("Password: ");
                     var loginPassword1 = Console.ReadLine();
                     var result = await userRepository.Login(userName1, loginPassword1);
 
