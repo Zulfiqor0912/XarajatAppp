@@ -42,7 +42,8 @@ public class ExpenditureRepository : IExpenditureRepository
         var team = await teamRepository.GetTeamByName(teamName);
         if (team != null && expenditures.Count != 0)
         {
-            decimal avareageCost = _amount / (decimal)expenditures.Count;
+            
+            
             var _costUsers = expenditures
                 .GroupBy(x => x.Username)
                 .Select(x => new
@@ -51,7 +52,13 @@ public class ExpenditureRepository : IExpenditureRepository
                     TotalAmount = x.Sum(y => y.Amount)
                 }).ToList();
 
-                userCosts = _costUsers
+            var userCount = _costUsers
+                .Select(n => n.Username)
+                .Distinct()
+                .Count();
+            decimal avareageCost = _amount / (decimal)userCount;
+
+            userCosts = _costUsers
                 .Select(x => new UsertCost
                 {
                     Id = Guid.NewGuid(),

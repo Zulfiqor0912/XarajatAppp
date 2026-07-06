@@ -55,7 +55,7 @@ namespace XarajatAppp.Repositories
             }
                  
         }
-        public async Task CreateTeam(string teamName, string password)
+        public async Task<bool> CreateTeam(string teamName, string password)
         {
             if (!File.Exists(PathT)) teams = new List<Team>();
             if (teams.Find(t => t.Name == teamName) is null)
@@ -78,9 +78,11 @@ namespace XarajatAppp.Repositories
                     var json = JsonSerializer.Serialize(teams);
                     await File.WriteAllTextAsync(PathT, json);
                     Console.WriteLine("Guruh yaratildi");
+                    return true;
                 }
+                return false;
             }
-            else { message.ShowMessage("Bunday nomli guruh mavjud"); }
+            else { message.ShowMessage("Bunday nomli guruh mavjud"); return false; }
             
         }
         public async Task<Team> GetTeamByName(string teamName)
